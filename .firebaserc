@@ -1,5 +1,6 @@
 {
   "projects": {
-    "boomAirsoft": "boomairsoft-b2e78"
+    "boomAirsoft": "boomairsoft-b2e78",
+    "default": "boomairsoft-b2e78"
   }
 }
