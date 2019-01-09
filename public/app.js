@@ -12,26 +12,28 @@
 
     var app = angular.module('app',['firebase',"ngRoute",'ngResource']);
 
-    app.controller('mainCtrl',function($firebaseObject,$scope,ItemService){
+    app.controller('mainCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil){
       // const rootRef = firebase.database().ref().child('items');
       // const ref = rootRef.child('marui');
       ItemService.get(function(data){
-        // console.log(data);
-        // console.log($firebaseObject(ref));
-        // var syncObject = $firebaseObject(ref);
         $scope.list=data;
+        $window.sessionStorage.setItem("allitems",JSON.stringify(data));
+        //console.log(JSON.parse($window.sessionStorage.getItem("allitems")));
       })
 
     })
 
-    app.controller('redCtrl',function($firebaseObject,$scope,ItemService,$routeParams){
-      $scope.params = $routeParams;
-      // ItemService.get(function(data){
-      //   var syncObject = $firebaseObject(ref);
-      //   $scope.list=data;
-      // })
+    app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,DataStorage,QueryUtil,$routeParams){
+
+      ItemService.get(function(data){
+        $scope.params = $routeParams;
+        $scope.detailItem = QueryUtil.getItemByName(data,$routeParams.itemName);
+      })
+
+
 
     })
+
 
     app.directive('flexslider', function () {
 
@@ -50,15 +52,15 @@
       }
     });
 
-    app.config(function($routeProvider,$locationProvider) {
+    app.config(function($routeProvider) {
     $routeProvider
     .when("/", {
         templateUrl : "home.html",
         controller : "mainCtrl"
     })
-    .when("/red/:itemName", {
-        templateUrl : "red.html",
-        controller : "redCtrl"
+    .when("/items/:itemName", {
+        templateUrl : "product_detail.html",
+        controller : "productDetailCtrl"
     })
     .when("/green", {
         templateUrl : "green.htm"
@@ -66,7 +68,6 @@
     .when("/blue", {
         templateUrl : "blue.htm"
     });
-    $locationProvider.html5Mode(true);
   });
 
 

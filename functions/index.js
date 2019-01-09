@@ -14,12 +14,21 @@ firebase.initializeApp(config);
 
 const app = express();
 
-app.get('/testApi',(request,response)=>{
+app.get('/api/items',(request,response)=>{
   var itemsCountRef = firebase.database().ref().child('items');
   itemsCountRef.on('value', function(snapshot) {
     console.log(snapshot.val());
     response.send(snapshot.val());
+    // response.send(request.params.id);
   });
+});
+
+app.get('/api/items/:id',(request,response)=>{
+  var itemsCountRef = firebase.database().ref().child('items/marui');
+  itemsCountRef.orderByChild("name").equalTo("HK416").on("child_added", function(snapshot) {
+    console.log(snapshot.key);
+  });
+  response.send(request.params.id);
 });
 
 

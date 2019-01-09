@@ -7,8 +7,9 @@
       "**/node_modules/**"
     ],
     "rewrites": [{
-      "source": "/testApi",
+      "source": "/api/**",
       "function": "app"
-    }]
+    }
+  ]
   }
 }
