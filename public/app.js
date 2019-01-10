@@ -23,7 +23,7 @@
 
     })
 
-    app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,DataStorage,QueryUtil,$routeParams){
+    app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams){
 
       ItemService.get(function(data){
         $scope.params = $routeParams;
