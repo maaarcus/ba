@@ -11,8 +11,20 @@
     firebase.initializeApp(config);
 
     var app = angular.module('app',['firebase',"ngRoute",'ngResource']);
+    const auth = firebase.auth();
 
     app.controller('mainCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil){
+      $scope.logout_submit = function() {
+        firebase.auth().signOut().then(function() {
+          console.log('Signed Out');
+        }, function(error) {
+          console.error('Sign Out Error', error);
+        });
+      }
+
+    })
+
+    app.controller('homeCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil){
       // const rootRef = firebase.database().ref().child('items');
       // const ref = rootRef.child('marui');
       ItemService.get(function(data){
@@ -29,9 +41,43 @@
         $scope.params = $routeParams;
         $scope.detailItem = QueryUtil.getItemByName(data,$routeParams.itemName);
       })
+    })
+
+    app.controller('manageItemCtrl', ['$scope','ItemService', function($scope,ItemService) {
+      $scope.list = [];
+      console.log(firebase.auth().currentUser);
+
+      $scope.submit = function() {
+        firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+          $scope.item.token=idToken;
+          console.log($scope.item);
+          ItemService.save($scope.item);
+          console.log(firebase.auth().currentUser);
+          console.log("done");
+        }).catch(function(error) {
+          console.log(error);
+        });
 
 
+      }
+    }])
 
+    app.controller('loginCtrl',function($scope){
+      $scope.loginSubmit = function() {
+        console.log($scope.login.username);
+        auth.signInWithEmailAndPassword($scope.login.username,$scope.login.pw)
+        .then(function(){
+          console.log("login success");
+          location.reload();
+        }).catch(function(error) {
+          // Handle Errors here.
+
+          errorMessage = error.message;
+          console.log(error.message);
+
+        });
+
+      }
     })
 
 
@@ -55,18 +101,20 @@
     app.config(function($routeProvider) {
     $routeProvider
     .when("/", {
-        templateUrl : "home.html",
-        controller : "mainCtrl"
+        templateUrl : "./views/home.html",
+        controller : "homeCtrl"
     })
     .when("/items/:itemName", {
-        templateUrl : "product_detail.html",
+        templateUrl : "./views/product_detail.html",
         controller : "productDetailCtrl"
     })
-    .when("/green", {
-        templateUrl : "green.htm"
+    .when("/manageItem", {
+        templateUrl : "./views/manage_items.html",
+        controller : "manageItemCtrl"
     })
-    .when("/blue", {
-        templateUrl : "blue.htm"
+    .when("/login", {
+        templateUrl : "./views/login.html",
+        controller : "loginCtrl"
     });
   });
 

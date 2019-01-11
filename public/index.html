@@ -46,7 +46,7 @@
 		<script src="https://underscorejs.org/underscore-min.js"></script>
 
 		<script src="app.js"></script>
-		<script src="itemService.js"></script>
+		<script src="serviceFactory.js"></script>
 		<script src="queryUtil.js"></script>
 
 
@@ -55,7 +55,7 @@
 			<script src="js/respond.min.js"></script>
 		<![endif]-->
 	</head>
-    <body ng-app="app">
+    <body ng-app="app" ng-controller="mainCtrl">
 		<div id="top-bar" class="container">
 			<div class="row">
 				<div class="span4">
@@ -66,10 +66,11 @@
 				<div class="span8">
 					<div class="account pull-right">
 						<ul class="user-menu">
-							<li><a href="#!red">My Account</a></li>
+							<li><a href="#!manageItem">Manage</a></li>
 							<li><a href="cart.html">Your Cart</a></li>
 							<li><a href="checkout.html">Checkout</a></li>
-							<li><a href="register.html">Login</a></li>
+							<li><a href="#!login">Login</a></li>
+							<li><a ng-click ="logout_submit()">Logout</a></li>
 						</ul>
 					</div>
 				</div>
