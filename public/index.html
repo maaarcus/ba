@@ -69,8 +69,8 @@
 							<li><a href="#!manageItem">Manage</a></li>
 							<li><a href="cart.html">Your Cart</a></li>
 							<li><a href="checkout.html">Checkout</a></li>
-							<li><a href="#!login">Login</a></li>
-							<li><a ng-click ="logout_submit()">Logout</a></li>
+							<li ng-hide="isLoggedIn"><a href="#!login">Login</a></li>
+							<li ng-hide="!isLoggedIn"><a ng-click ="logout_submit()">Logout</a></li>
 						</ul>
 					</div>
 				</div>

@@ -13,14 +13,28 @@
     var app = angular.module('app',['firebase',"ngRoute",'ngResource']);
     const auth = firebase.auth();
 
-    app.controller('mainCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil){
+    app.controller('mainCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
       $scope.logout_submit = function() {
         firebase.auth().signOut().then(function() {
           console.log('Signed Out');
+
         }, function(error) {
           console.error('Sign Out Error', error);
         });
       }
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          console.log("user is logged in");
+          $rootScope.isLoggedIn=true;
+          $scope.$apply();
+        } else {
+          console.log("No user is logged in");
+          $rootScope.isLoggedIn=false;
+          $scope.$apply();
+        }
+      });
+
+
 
     })
 
@@ -44,14 +58,20 @@
     })
 
     app.controller('manageItemCtrl', ['$scope','ItemService', function($scope,ItemService) {
-      $scope.list = [];
+      $scope.uploadStatus='Standing by...';
       console.log(firebase.auth().currentUser);
 
       $scope.submit = function() {
+        $scope.uploadStatus='Uploading...';
         firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
           $scope.item.token=idToken;
           console.log($scope.item);
-          ItemService.save($scope.item);
+          ItemService.save($scope.item,function(res){
+            $scope.uploadStatus=res.msg;
+          },function(err){
+            console.log(err);
+          });
+
           console.log(firebase.auth().currentUser);
           console.log("done");
         }).catch(function(error) {
@@ -62,20 +82,28 @@
       }
     }])
 
-    app.controller('loginCtrl',function($scope){
+    app.controller('loginCtrl',function($rootScope,$scope,$window){
       $scope.loginSubmit = function() {
-        console.log($scope.login.username);
-        auth.signInWithEmailAndPassword($scope.login.username,$scope.login.pw)
-        .then(function(){
-          console.log("login success");
-          location.reload();
-        }).catch(function(error) {
-          // Handle Errors here.
+        if($rootScope.isLoggedIn){
+          console.log("logged in already, not submitting");
+        }else{
+          console.log($scope.login.username);
+          auth.signInWithEmailAndPassword($scope.login.username,$scope.login.pw)
+          .then(function(){
+            console.log("login success");
+            $rootScope.isLoggedIn=true;
+            //$window.location = "#/"
+            location.reload();
+          }).catch(function(error) {
+            // Handle Errors here.
 
-          errorMessage = error.message;
-          console.log(error.message);
+            errorMessage = error.message;
+            console.log(error.message);
 
-        });
+          });
+        }
+
+
 
       }
     })

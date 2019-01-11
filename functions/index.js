@@ -60,10 +60,10 @@ app.post('/api/items',(request,response)=>{
         price: request.body.price
       })
       console.log(request.body.name);
-      response.end('It worked!');
+      response.send({msg: "Update success"});
     }else{
       console.log("not authenticated");
-      response.end('not authenticated!');
+      response.send({msg: "not authenticated"});
     }
   }).catch(function(error) {
     console.log(error);
