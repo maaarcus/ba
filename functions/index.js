@@ -56,6 +56,8 @@ app.post('/api/items',(request,response)=>{
     if (uid == '7DfyEySxFrPMzxGuiW0sgsl4uQj1'){
       ref.push({
         name: request.body.name,
+        brand: request.body.brand,
+        image: request.body.image,
         description: request.body.description,
         price: request.body.price
       })

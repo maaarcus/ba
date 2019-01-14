@@ -25,6 +25,11 @@
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           console.log("user is logged in");
+          if(user.uid=='7DfyEySxFrPMzxGuiW0sgsl4uQj1'){
+            $rootScope.isAdminLogin=true;
+          }else{
+            $rootScope.isAdminLogin=false;
+          }
           $rootScope.isLoggedIn=true;
           $scope.$apply();
         } else {
@@ -43,7 +48,7 @@
       // const ref = rootRef.child('marui');
       ItemService.get(function(data){
         $scope.list=data;
-        $window.sessionStorage.setItem("allitems",JSON.stringify(data));
+        //$window.sessionStorage.setItem("allitems",JSON.stringify(data));
         //console.log(JSON.parse($window.sessionStorage.getItem("allitems")));
       })
 
@@ -55,6 +60,10 @@
         $scope.params = $routeParams;
         $scope.detailItem = QueryUtil.getItemByName(data,$routeParams.itemName);
       })
+      $scope.itemEditSumbit = function(){
+        console.log("edit");
+      }
+
     })
 
     app.controller('manageItemCtrl', ['$scope','ItemService', function($scope,ItemService) {
@@ -63,7 +72,7 @@
 
       $scope.submit = function() {
         $scope.uploadStatus='Uploading...';
-        firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+        firebase.auth().currentUser.getIdToken().then(function(idToken) {
           $scope.item.token=idToken;
           console.log($scope.item);
           ItemService.save($scope.item,function(res){
@@ -108,6 +117,22 @@
       }
     })
 
+    app.controller('productsCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams){
+
+      ItemService.get(function(data){
+        $scope.params = $routeParams;
+
+        delete data.$promise;
+        delete data.$resolved;
+
+        console.log(data);
+        $scope.products = QueryUtil.getItemByBrand(data,$routeParams.brand);
+        // console.log($scope.products);
+      })
+
+
+    })
+
 
     app.directive('flexslider', function () {
 
@@ -128,7 +153,7 @@
 
     app.config(function($routeProvider) {
     $routeProvider
-    .when("/", {
+    .when("/home", {
         templateUrl : "./views/home.html",
         controller : "homeCtrl"
     })
@@ -143,6 +168,10 @@
     .when("/login", {
         templateUrl : "./views/login.html",
         controller : "loginCtrl"
+    })
+    .when("/products/:brand", {
+        templateUrl : "./views/products.html",
+        controller : "productsCtrl"
     });
   });
 
