@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>Bootstrap E-commerce Templates</title>
+		<title>BoomAirsoft</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<!--[if ie]><meta content='IE=8' http-equiv='X-UA-Compatible'/><![endif]-->
@@ -45,9 +45,9 @@
 		<!-- underscore -->
 		<script src="https://underscorejs.org/underscore-min.js"></script>
 
-		<script src="app.js"></script>
-		<script src="serviceFactory.js"></script>
-		<script src="queryUtil.js"></script>
+		<script src="./views/app.js"></script>
+		<script src="./views/serviceFactory.js?version=1.0"></script>
+		<script src="./views/queryUtil.js?version=1.0"></script>
 
 
 		<!--[if lt IE 9]>
@@ -59,18 +59,18 @@
 		<div id="top-bar" class="container">
 			<div class="row">
 				<div class="span4">
-					<form method="POST" class="search_form">
-						<input type="text" class="input-block-level search-query" Placeholder="eg. T-sirt">
+					<form method="POST" ng-submit="searchBar()" >
+						<input type="text" class="input-block-level search-query" Placeholder="eg. G18c we marui" ng-model="search">
 					</form>
 				</div>
 				<div class="span8">
 					<div class="account pull-right">
 						<ul class="user-menu">
-							<li><a href="#!manageItem">Manage</a></li>
+							<li ng-hide="!isAdminLogin" ng-cloak><a href="#!manageItem">Manage</a></li>
 							<li><a href="cart.html">Your Cart</a></li>
 							<li><a href="checkout.html">Checkout</a></li>
-							<li ng-hide="isLoggedIn"><a href="#!login">Login</a></li>
-							<li ng-hide="!isLoggedIn"><a ng-click ="logout_submit()">Logout</a></li>
+							<li ng-hide="isLoggedIn" ng-cloak><a href="#!login">Login</a>
+							<li ng-hide="!isLoggedIn" ng-cloak><a ng-click ="logout_submit()">Logout</a></li>
 						</ul>
 					</div>
 				</div>
@@ -82,7 +82,7 @@
 					<a href="#!home" class="logo pull-left"><img src="themes/images/logo.png" class="site_logo" alt=""></a>
 					<nav id="menu" class="pull-right">
 						<ul>
-							<li><a href="./products.html">Airsoft Guns</a>
+							<li><a href="#!products/all">Airsoft Guns</a>
 								<ul>
 									<li><a href="#!products/marui">Marui</a></li>
 									<li><a href="#!products/we">WE</a></li>
@@ -156,7 +156,7 @@
 				</div>
 			</section>
 			<section id="copyright">
-				<span>Copyright 2013 bootstrappage template  All right reserved.</span>
+				<span>Copyright 2019 BoomAirsoft  All right reserved.</span>
 			</section>
 		</div>
 		<script src="themes/js/common.js"></script>
