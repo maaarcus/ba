@@ -57,7 +57,6 @@
 	</head>
     <body ng-app="app" ng-controller="mainCtrl">
 		<div id="top-bar" class="container">
-				<div id="paypal-button"></div>
 			<div class="row">
 				<div class="span4">
 					<form method="POST" ng-submit="searchBar()" >
@@ -68,7 +67,7 @@
 					<div class="account pull-right">
 						<ul class="user-menu">
 							<li ng-hide="!isAdminLogin" ng-cloak><a href="#!manageItem">Manage</a></li>
-							<li><a href="cart.html">Your Cart</a></li>
+							<li><a href="#!cart">Your Cart</a></li>
 							<li><a href="checkout.html">Checkout</a></li>
 							<li ng-hide="isLoggedIn" ng-cloak><a href="#!login">Login</a>
 							<li ng-hide="!isLoggedIn" ng-cloak><a ng-click ="logout_submit()">Logout</a></li>

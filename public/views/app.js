@@ -19,6 +19,12 @@
           console.log("List scope set");
         })
       }
+
+
+      if(!$rootScope.cart){
+        $rootScope.cart=[];
+        console.log("cart reset");
+      }
 	   });
     const auth = firebase.auth();
 
@@ -71,7 +77,7 @@
 
     app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope){
 
-      if($rootScope){
+      if($rootScope.list){
         $scope.detailItem = QueryUtil.getItemByName($rootScope.list,$routeParams.itemName);
       }else{
         $rootScope.$on("serviceInfoReceived", function(){
@@ -83,6 +89,14 @@
 
       $scope.itemEditSumbit = function(){
         console.log("edit");
+      }
+
+      $scope.addToCartClick = function(){
+        console.log("addToCartClick");
+        if($rootScope.list){
+          $rootScope.cart.push($scope.detailItem);
+          console.log($rootScope.cart);
+        }
       }
 
     })
@@ -158,6 +172,12 @@
 
     })
 
+    app.controller('cartCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
+      console.log($rootScope.cart);
+      $scope.products=$rootScope.cart;
+
+    })
+
 
     app.directive('flexslider', function () {
 
@@ -201,7 +221,11 @@
     .when("/products/:brand?/:search?", {
         templateUrl : "./views/products.html",
         controller : "productsCtrl"
-    });
+    })
+    .when("/cart", {
+        templateUrl : "./views/cart.html",
+        controller : "cartCtrl"
+    })
   });
 
 
