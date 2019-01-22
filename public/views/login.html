@@ -1,0 +1,10 @@
+<form ng-hide="isLoggedIn" ng-submit="loginSubmit()">
+  <p>Username</p>
+  <p><input type="text" ng-model="login.username" name="login_name" /></p>
+  <p>Password</p>
+  <p><input type="password" ng-model="login.pw" name="login_pw" /></p>
+  <input type="submit" id="submit" value="Submit" />
+  <p>{{loginStatus}}</p>
+</form>
+
+<a ng-hide="!isLoggedIn">Logged In</p>
