@@ -57,6 +57,7 @@
 	</head>
     <body ng-app="app" ng-controller="mainCtrl">
 		<div id="top-bar" class="container">
+				<div id="paypal-button"></div>
 			<div class="row">
 				<div class="span4">
 					<form method="POST" ng-submit="searchBar()" >
@@ -161,19 +162,36 @@
 		</div>
 		<script src="themes/js/common.js"></script>
 		<script src="themes/js/jquery.flexslider-min.js"></script>
-		<!-- <script type="text/javascript">
-			$(function() {
-				$(document).ready(function() {
-					$('.flexslider').flexslider({
-						animation: "fade",
-						slideshowSpeed: 4000,
-						animationSpeed: 600,
-						controlNav: false,
-						directionNav: true,
-						controlsContainer: ".flex-container" // the container that holds the flexslider
-					});
-				});
-			});
-		</script> -->
+		<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+
+
+		<script>
+		  paypal.Button.render({
+		    env: 'sandbox', // Or 'production'
+		    // Set up the payment:
+		    // 1. Add a payment callback
+		    payment: function(data, actions) {
+		      // 2. Make a request to your server
+		      return actions.request.post('/api/create-payment/')
+		        .then(function(res) {
+		          // 3. Return res.id from the response
+		          return res.id;
+		        });
+		    },
+		    // Execute the payment:
+		    // 1. Add an onAuthorize callback
+		    onAuthorize: function(data, actions) {
+		      // 2. Make a request to your server
+		      return actions.request.post('/api/execute-payment/', {
+		        paymentID: data.paymentID,
+		        payerID:   data.payerID
+		      })
+		        .then(function(res) {
+		          // 3. Show the buyer a confirmation message.
+		        });
+		    }
+		  }, '#paypal-button');
+		</script>
     </body>
 </html>

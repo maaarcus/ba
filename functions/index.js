@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const express = require('express');
 var firebase = require("firebase");
+var request = require('request');
 
 // var config = {
 //   apiKey: "AIzaSyBv8I-qaYHgD2HgaAj3CdC7nGJsGbPndDI",
@@ -28,6 +29,7 @@ var ref = db.ref('items');
 //end
 
 const app = express();
+require('./payment')(app,request);
 // var itemsCountRef = firebase.database().ref().child('items/marui');
 
 app.get('/api/items',(request,response)=>{
