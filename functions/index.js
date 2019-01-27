@@ -29,7 +29,8 @@ var ref = db.ref('items');
 //end
 
 const app = express();
-require('./payment')(app,request);
+var helper = require('./helper.js');
+require('./payment')(app,request,helper,ref);
 // var itemsCountRef = firebase.database().ref().child('items/marui');
 
 app.get('/api/items',(request,response)=>{

@@ -56,6 +56,7 @@
 		<![endif]-->
 	</head>
     <body ng-app="app" ng-controller="mainCtrl">
+		<paypal-checkout></paypal-checkout>
 		<div id="top-bar" class="container">
 			<div class="row">
 				<div class="span4">
@@ -161,18 +162,18 @@
 		</div>
 		<script src="themes/js/common.js"></script>
 		<script src="themes/js/jquery.flexslider-min.js"></script>
-		<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+		<script src="https://www.paypalobjects.com/api/checkout.js" data-version-4></script>
+		<script>paypal.Button.driver('angular', window.angular);</script>
 
 
-
-		<script>
+		<!-- <script>
 		  paypal.Button.render({
 		    env: 'sandbox', // Or 'production'
 		    // Set up the payment:
 		    // 1. Add a payment callback
 		    payment: function(data, actions) {
 		      // 2. Make a request to your server
-		      return actions.request.post('/api/create-payment/')
+		      return actions.request.post('/api/create-payment/',{items: $scope.cart,})
 		        .then(function(res) {
 		          // 3. Return res.id from the response
 		          return res.id;
@@ -191,6 +192,6 @@
 		        });
 		    }
 		  }, '#paypal-button');
-		</script>
+		</script> -->
     </body>
 </html>

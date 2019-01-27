@@ -1,0 +1,71 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.9/angular.js"></script>
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+<script>
+  var config = {
+    apiKey: "AIzaSyBv8I-qaYHgD2HgaAj3CdC7nGJsGbPndDI",
+    authDomain: "boomairsoft-b2e78.firebaseapp.com",
+    databaseURL: "https://boomairsoft-b2e78.firebaseio.com",
+    projectId: "boomairsoft-b2e78",
+    storageBucket: "boomairsoft-b2e78.appspot.com",
+    messagingSenderId: "998878149034"
+  };
+  firebase.initializeApp(config);
+  
+    paypal.Button.driver('angular', window.angular);
+
+    angular.module('app', [ 'paypal-button' ])
+        .controller('appController', function($scope) {
+
+            $scope.opts = {
+
+                env: 'sandbox',
+
+                client: {
+                    sandbox:    'AWi18rxt26-hrueMoPZ0tpGEOJnNT4QkiMQst9pYgaQNAfS1FLFxkxQuiaqRBj1vV5PmgHX_jA_c1ncL',
+                    production: '<insert production client id>'
+                },
+
+                // payment: function() {
+                //
+                //     var env    = this.props.env;
+                //     var client = this.props.client;
+                //
+                //     return paypal.rest.payment.create(env, client, {
+                //         transactions: [
+                //             {
+                //                 amount: { total: '1.00', currency: 'USD' }
+                //             }
+                //         ]
+                //     });
+                // },
+
+                payment: function(data, actions) {
+                  // 2. Make a request to your server
+                  return actions.request.post('/api/create-payment/',{items: $scope.cart,})
+                    .then(function(res) {
+                      // 3. Return res.id from the response
+                      return res.id;
+                    });
+                },
+
+                commit: true, // Optional: show a 'Pay Now' button in the checkout flow
+
+                onAuthorize: function(data, actions) {
+
+                    // Optional: display a confirmation page here
+
+                    return actions.payment.execute().then(function() {
+                        // Show a success page to the buyer
+                    });
+                }
+            };
+
+    });
+</script>
+
+<body ng-app="app" ng-controller="appController">
+
+    <paypal-button env="opts.env" client="opts.client" payment="opts.payment" commit="opts.commit" on-authorize="opts.onAuthorize"></paypal-button>
+
+</body>

@@ -10,7 +10,8 @@
     };
     firebase.initializeApp(config);
 
-    var app = angular.module('app',['firebase',"ngRoute",'ngResource'])
+
+    var app = angular.module('app',['firebase',"ngRoute",'ngResource','paypal-button'])
     .run(function ($rootScope,ItemService) {
       if (!$rootScope.list){
         ItemService.get(function(data){
@@ -72,7 +73,6 @@
 
     app.controller('homeCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
 
-
     })
 
     app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope){
@@ -94,7 +94,11 @@
       $scope.addToCartClick = function(){
         console.log("addToCartClick");
         if($rootScope.list){
-          $rootScope.cart.push($scope.detailItem);
+          if(!$rootScope.cart.includes($scope.detailItem)){
+            $rootScope.cart.push($scope.detailItem);
+          }else{
+            console.log("item is already in cart!");
+          }
           console.log($rootScope.cart);
         }
       }
@@ -175,8 +179,74 @@
     app.controller('cartCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
       console.log($rootScope.cart);
       $scope.products=$rootScope.cart;
+      $scope.getTotal = function(){
+      var total = 0;
+      for(var i = 0; i < $scope.cart.length; i++){
+          var product = $scope.cart[i];
+          total += parseFloat(product.price);
+          }
+          return total;
+      }
+
+      $scope.opts = {
+
+          env: 'sandbox',
+
+          client: {
+              sandbox:    'AWi18rxt26-hrueMoPZ0tpGEOJnNT4QkiMQst9pYgaQNAfS1FLFxkxQuiaqRBj1vV5PmgHX_jA_c1ncL',
+              production: '<insert production client id>'
+          },
+
+          // payment: function() {
+          //
+          //     var env    = this.props.env;
+          //     var client = this.props.client;
+          //
+          //     return paypal.rest.payment.create(env, client, {
+          //         transactions: [
+          //             {
+          //                 amount: { total: '1.00', currency: 'USD' }
+          //             }
+          //         ]
+          //     });
+          // },
+
+          payment: function(data, actions) {
+            // 2. Make a request to your server
+            payload=JSON.stringify($scope.cart);
+            return actions.request.post('/api/create-payment/',{product_id: payload,})
+              .then(function(res) {
+                // 3. Return res.id from the response
+                console.log(res.id);
+                return res.id;
+              });
+          },
+
+          commit: true, // Optional: show a 'Pay Now' button in the checkout flow
+
+          // onAuthorize: function(data, actions) {
+          //
+          //     // Optional: display a confirmation page here
+          //
+          //     return actions.payment.execute().then(function() {
+          //         // Show a success page to the buyer
+          //     });
+          // }
+          onAuthorize: function(data, actions) {
+            // 2. Make a request to your server
+            return actions.request.post('/api/execute-payment/', {
+              paymentID: data.paymentID,
+              payerID:   data.payerID
+            })
+              .then(function(res) {
+                // 3. Show the buyer a confirmation message.
+              });
+          }
+      };
 
     })
+
+
 
 
     app.directive('flexslider', function () {

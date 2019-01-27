@@ -1,4 +1,4 @@
-module.exports = function(app,request){
+module.exports = function(app,request,helper,ref){
   var CLIENT =
     'AesGuv0kHzzDyce6vEvFfJo9opx-RC9Y9S6o9ssiPvPJ-23wY0rKhb7AG04BphkrfqL5Vs9_3qmtXKw2';
   var SECRET =
@@ -9,6 +9,12 @@ module.exports = function(app,request){
     // 1. Set up a URL to handle requests from the PayPal button
     .post('/api/create-payment/', function(req, res)
     {
+      helper.validateWithDB(ref); //deal with async check here
+
+      var mappedItems=helper.mapProductCheckout(req.body.product_id);
+      var totalPrice=helper.getTotalCheckout(mappedItems);
+      console.log(req.body.product_id);
+      console.log(JSON.parse(req.body.product_id)[0]);
       // 2. Call /v1/payments/payment to set up the payment
       request.post(PAYPAL_API + '/v1/payments/payment',
       {
@@ -28,11 +34,18 @@ module.exports = function(app,request){
           {
             amount:
             {
-              total: '6.99',
+              total: totalPrice,
               currency: 'USD'
             },
-            description: "The payment transaction description. 5.99"
-          }],
+            description: "The payment transaction description. 5.99",
+            item_list: {
+              items: mappedItems,
+              shipping_phone_number: '123123123123123312'
+            }
+
+          },
+        ],
+        note_to_payer: "Shoud you have any questions, please contact our whatsapp: 12312322",
           redirect_urls:
           {
             return_url: 'https://www.google.com',
@@ -42,9 +55,11 @@ module.exports = function(app,request){
         json: true
       }, function(err, response)
       {
+        console.log("the id is: "+response.body.id);
         if (err)
         {
           console.error(err);
+          console.log("something went wrong");
           return res.sendStatus(500);
         }
         // 3. Return the payment ID to the client
