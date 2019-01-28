@@ -45,9 +45,9 @@
 		<!-- underscore -->
 		<script src="https://underscorejs.org/underscore-min.js"></script>
 
-		<script src="./views/app.js"></script>
-		<script src="./views/serviceFactory.js?version=1.0"></script>
-		<script src="./views/queryUtil.js?version=1.0"></script>
+		<script src="./views/app.js?version=1.1"></script>
+		<script src="./views/serviceFactory.js?version=1.1"></script>
+		<script src="./views/queryUtil.js?version=1.1"></script>
 
 
 		<!--[if lt IE 9]>
@@ -69,7 +69,6 @@
 						<ul class="user-menu">
 							<li ng-hide="!isAdminLogin" ng-cloak><a href="#!manageItem">Manage</a></li>
 							<li><a href="#!cart">Your Cart</a></li>
-							<li><a href="checkout.html">Checkout</a></li>
 							<li ng-hide="isLoggedIn" ng-cloak><a href="#!login">Login</a>
 							<li ng-hide="!isLoggedIn" ng-cloak><a ng-click ="logout_submit()">Logout</a></li>
 						</ul>

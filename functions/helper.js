@@ -34,9 +34,10 @@ module.exports = {
       return sum;
     },
 
-    validateWithDB: function(ref){
+    validateWithDB: async function(ref){
       ref.on("value", function(snapshot) {
         console.log(snapshot.val());
+        return snapshot.val();
       }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
