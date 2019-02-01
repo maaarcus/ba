@@ -15,6 +15,7 @@
 		<!-- global styles -->
 		<link href="themes/css/flexslider.css" rel="stylesheet"/>
 		<link href="themes/css/main.css" rel="stylesheet"/>
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
 
 		<!-- scripts -->
 		<script src="themes/js/jquery-1.7.2.min.js"></script>
@@ -32,7 +33,16 @@
 		<!-- initialize the SDK after all desired features are loaded -->
 		<script defer src="/__/firebase/init.js"></script>
 		<!-- AngularJS -->
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script> -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-aria.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-messages.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.js"></script>
+
+		<!-- Angular Material Library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.js"></script>
+
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-resource.min.js"></script>
 
@@ -55,9 +65,9 @@
 			<script src="js/respond.min.js"></script>
 		<![endif]-->
 	</head>
-    <body ng-app="app" ng-controller="mainCtrl">
+    <body ng-app="app" ng-controller="mainCtrl" >
 		<paypal-checkout></paypal-checkout>
-		<div id="top-bar" class="container">
+		<div id="top-bar" class="container" ng-cloak>
 			<div class="row">
 				<div class="span4">
 					<form method="POST" ng-submit="searchBar()" >
@@ -87,6 +97,7 @@
 									<li><a href="#!products/marui">Marui</a></li>
 									<li><a href="#!products/we">WE</a></li>
 									<li><a href="#!products/kj">KJ</a></li>
+									<li><a href="#!products/GHK">GHK</a></li>
 								</ul>
 							</li>
 							<li><a href="./products.html">Parts</a></li>
@@ -128,7 +139,7 @@
 						<ul class="nav">
 							<li><a href="#!">Homepage</a></li>
 							<li><a href="./about.html">About Us</a></li>
-							<li><a href="./contact.html">Contac Us</a></li>
+							<li><a href="./contact.html">Contact Us</a></li>
 							<li><a href="./cart.html">Your Cart</a></li>
 							<li><a href="./register.html">Login</a></li>
 						</ul>

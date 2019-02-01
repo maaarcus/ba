@@ -11,7 +11,7 @@
     firebase.initializeApp(config);
 
 
-    var app = angular.module('app',['firebase',"ngRoute",'ngResource','paypal-button'])
+    var app = angular.module('app',['firebase',"ngRoute",'ngResource','paypal-button','ngMaterial','ui.filters'])
     .run(function ($rootScope,ItemService) {
       if (!$rootScope.list){
         ItemService.get(function(data){
@@ -64,18 +64,28 @@
         $rootScope.$apply();
       });
 
-
-
-
-
+      function showDefaultImg(ev){
+        event.src = "./images/gotop.png";
+        event.onerror = '';
+      }
 
     })
+
+    app.filter('range', function() {
+      return function(input, total) {
+        total = parseInt(total);
+        for (var i=1; i<total; i++)
+          input.push(i);
+        return input;
+      };
+    });
+
 
     app.controller('homeCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
-
+      console.log($scope.list);
     })
 
-    app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope){
+    app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope,$mdDialog){
 
       if($rootScope.list){
         $scope.detailItem = QueryUtil.getItemByName($rootScope.list,$routeParams.itemName);
@@ -91,13 +101,32 @@
         console.log("edit");
       }
 
-      $scope.addToCartClick = function(){
+      $scope.addToCartClick = function(ev){
         console.log("addToCartClick");
         if($rootScope.list){
           if(!$rootScope.cart.includes($scope.detailItem)){
             $rootScope.cart.push($scope.detailItem);
+            $mdDialog.show(
+              $mdDialog.alert()
+                .parent(angular.element(document.querySelector('#productDetailPage')))
+                .clickOutsideToClose(true)
+                .title('Success')
+                .textContent('Item added to the cart.')
+                .ariaLabel('Alert Dialog Demo')
+                .ok('OK')
+                .targetEvent(ev)
+            );
           }else{
-            console.log("item is already in cart!");
+            $mdDialog.show(
+              $mdDialog.alert()
+                .parent(angular.element(document.querySelector('#productDetailPage')))
+                .clickOutsideToClose(true)
+                .title('Error')
+                .textContent('Already in the cart!')
+                .ariaLabel('Alert Dialog Demo')
+                .ok('OK')
+                .targetEvent(ev)
+            );
           }
           console.log($rootScope.cart);
         }
@@ -157,12 +186,22 @@
     })
 
     app.controller('productsCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope){
+      var pageStep = 2;
+      var pageMaxItem = 4;
+
+      $scope.headItemIndex=0;
+      $scope.footItemIndex=pageMaxItem;
+
       if($rootScope){
         if($routeParams.search == "search"){
           $scope.products = QueryUtil.getItemByAny($rootScope.list,$routeParams.brand);
         }else{
           $scope.products = QueryUtil.getItemByBrand($rootScope.list,$routeParams.brand);
         }
+        $scope.maxPages = Math.ceil((Object.keys($scope.products).length)/pageMaxItem)+1;
+        console.log("object count1: " + $scope.maxPages);
+        console.log("object length: " + Object.keys($scope.products).length);
+
       }else{
         $rootScope.$on("serviceInfoReceived", function(){
           if($routeParams.search == "search"){
@@ -171,8 +210,21 @@
             $scope.products = QueryUtil.getItemByBrand($rootScope.list,$routeParams.brand);
           }
          });
+
+        $scope.maxPages = Math.ceil((Object.keys($scope.products).length)/pageMaxItem)+1;
+         console.log("object count2: " + $scope.maxPages);
+
       }
 
+
+
+
+      $scope.switchPage = function(page){
+        $scope.headItemIndex=(page-1)*pageStep;
+        $scope.footItemIndex=(page-1)*pageStep+pageMaxItem;
+        // console.log($scope.footItemIndex);
+        // console.log($scope.headItemIndex);
+      }
 
     })
 
@@ -265,6 +317,20 @@
         }
       }
     });
+
+    app.directive('checkImage', function($http) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            attrs.$observe('ngSrc', function(ngSrc) {
+              console.log(ngSrc);
+              if(!ngSrc){
+                element.attr('src', 'themes/images/placeHolder.png')
+              }
+            });
+        }
+    };
+});
 
     app.config(function($routeProvider) {
     $routeProvider

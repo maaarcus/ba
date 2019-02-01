@@ -34,14 +34,14 @@ module.exports = {
       return sum;
     },
 
-    validateWithDB: async function(ref){
-      ref.on("value", function(snapshot) {
-        console.log(snapshot.val());
-        return snapshot.val();
-      }, function (errorObject) {
-        console.log("The read failed: " + errorObject.code);
-      });
-    }
+    // validateWithDB: async function(ref){
+    //   ref.on("value", function(snapshot) {
+    //     console.log(snapshot.val());
+    //     return snapshot.val();
+    //   }, function (errorObject) {
+    //     console.log("The read failed: " + errorObject.code);
+    //   });
+    // }
 
     // isWithinRange(text, min, max) {
     //     // check if text is between min and max length

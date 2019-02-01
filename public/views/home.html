@@ -1,5 +1,4 @@
 <test-directive paypal="paypal"></test-directive>
-yoyo
 <section  class="homepage-slider" id="home-slider">
   <div class="flexslider" flexslider>
     <ul class="slides">
@@ -37,7 +36,7 @@ yoyo
             <div class="carousel-inner">
               <div class="active item">
                 <ul class="thumbnails">
-                  <li class="span3" ng-repeat="item in list">
+                  <li class="span3" ng-repeat="item in list" ng-show="$index<20">
                     <div class="product-box">
                       <span class="sale_tag"></span>
                       <p><a href="#!items/{{item.name}}"><img ng-src="{{item.image}}" alt=""/></a></p>
@@ -57,81 +56,18 @@ yoyo
         <div class="span12">
           <h4 class="title">
             <span class="pull-left"><span class="text"><span class="line">Latest <strong>Products</strong></span></span></span>
-            <span class="pull-right">
-              <a class="left button" href="#myCarousel-2" data-slide="prev"></a><a class="right button" href="#myCarousel-2" data-slide="next"></a>
-            </span>
           </h4>
           <div id="myCarousel-2" class="myCarousel carousel slide">
             <div class="carousel-inner">
               <div class="active item">
                 <ul class="thumbnails">
-                  <li class="span3">
+                  <li class="span3" ng-repeat="item in list" ng-show="$index<4">
                     <div class="product-box">
                       <span class="sale_tag"></span>
-                      <p><a href="testApi"><img src="themes/images/doge.jpg" alt="" /></a></p>
-                      <a href="product_detail.html" class="title">Ut wisi enim ad</a><br/>
-                      <a href="products.html" class="category">Commodo consequat</a>
-                      <p class="price">$25.50</p>
-                    </div>
-                  </li>
-                  <li class="span3">
-                    <div class="product-box">
-                      <p><a href="product_detail.html"><img src="themes/images/cloth/doge.jpg" alt="" /></a></p>
-                      <a href="product_detail.html" class="title">Quis nostrud exerci tation</a><br/>
-                      <a href="products.html" class="category">Quis nostrud</a>
-                      <p class="price">$17.55</p>
-                    </div>
-                  </li>
-                  <li class="span3">
-                    <div class="product-box">
-                      <p><a href="product_detail.html"><img src="themes/images/doge.jpg" alt="" /></a></p>
-                      <a href="product_detail.html" class="title">Know exactly turned</a><br/>
-                      <a href="products.html" class="category">Quis nostrud</a>
-                      <p class="price">$25.30</p>
-                    </div>
-                  </li>
-                  <li class="span3">
-                    <div class="product-box">
-                      <p><a href="product_detail.html"><img src="themes/images/doge.jpg" alt="" /></a></p>
-                      <a href="product_detail.html" class="title">You think fast</a><br/>
-                      <a href="products.html" class="category">World once</a>
-                      <p class="price">$25.60</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class="item">
-                <ul class="thumbnails">
-                  <li class="span3">
-                    <div class="product-box">
-                      <p><a href="product_detail.html"><img src="themes/images/doge.jpg" alt="" /></a></p>
-                      <a href="product_detail.html" class="title">Know exactly</a><br/>
-                      <a href="products.html" class="category">Quis nostrud</a>
-                      <p class="price">$45.50</p>
-                    </div>
-                  </li>
-                  <li class="span3">
-                    <div class="product-box">
-                      <p><a href="product_detail.html"><img src="themes/images/doge.jpg" alt="" /></a></p>
-                      <a href="product_detail.html" class="title">Ut wisi enim ad</a><br/>
-                      <a href="products.html" class="category">Commodo consequat</a>
-                      <p class="price">$33.50</p>
-                    </div>
-                  </li>
-                  <li class="span3">
-                    <div class="product-box">
-                      <p><a href="product_detail.html"><img src="themes/images/doge.jpg" alt="" /></a></p>
-                      <a href="product_detail.html" class="title">You think water</a><br/>
-                      <a href="products.html" class="category">World once</a>
-                      <p class="price">$45.30</p>
-                    </div>
-                  </li>
-                  <li class="span3">
-                    <div class="product-box">
-                      <p><a href="product_detail.html"><img src="themes/images/doge.jpg" alt="" /></a></p>
-                      <a href="product_detail.html" class="title">Quis nostrud exerci</a><br/>
-                      <a href="products.html" class="category">Quis nostrud</a>
-                      <p class="price">$25.20</p>
+                      <p><a href="#!items/{{item.name}}"><img ng-src="{{item.image}}" alt=""/></a></p>
+                      <a href="product_detail.html" class="title">{{item.name}}</a><br/>
+                      <a href="products.html" class="category">{{item.description}}</a>
+                      <p class="price">{{item.price}}</p>
                     </div>
                   </li>
                 </ul>

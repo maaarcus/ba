@@ -3,7 +3,7 @@
 				<div class="row">
 					<div class="span12">
 						<ul class="thumbnails listing-products">
-							<li class="span3" ng-repeat="item in products">
+							<li class="span3" ng-repeat="item in products" ng-if="$index >= headItemIndex" ng-show="$index<footItemIndex">
 								<div class="product-box">
 									<span class="sale_tag"></span>
 									<a href="#!items/{{item.name}}"><img alt="" ng-src="{{item.image}}"></a><br/>
@@ -15,12 +15,8 @@
 						<hr>
 						<div class="pagination pagination-small pagination-centered">
 							<ul>
-								<li><a href="#">Prev</a></li>
-								<li class="active"><a href="#">1</a></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-								<li><a href="#">4s</a></li>
-								<li><a href="#">Next</a></li>
+								<li><button ng-click="switchPage('1')" >Prev</button></li>
+								<li ng-repeat="n in [] | range:maxPages"><button ng-click="switchPage(n)" >{{n}}</button></li>
 							</ul>
 						</div>
 					</div>

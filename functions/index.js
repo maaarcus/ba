@@ -61,6 +61,10 @@ app.post('/api/items',(request,response)=>{
         name: request.body.name,
         brand: request.body.brand,
         image: request.body.image,
+        // image1: request.body.image1,
+        // image2: request.body.image2,
+        // image3: request.body.image3,
+        // image4: request.body.image4,
         description: request.body.description,
         price: request.body.price
       })

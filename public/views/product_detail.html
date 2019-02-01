@@ -1,4 +1,4 @@
-<section class="header_text sub">
+<section class="header_text sub" id="productDetailPage">
 <!-- <img class="pageBanner" src="themes/images/pageBanner.jpg" alt="New products" > -->
 	<h4><span>Product Detail</span></h4>
 	<a ng-show="isAdminLogin" href="#!items/{{detailItem.name}}" >Edit</a>
@@ -8,19 +8,19 @@
 		<div class="span9">
 			<div class="row">
 				<div class="span4">
-					<a href="themes/images/ladies/1.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 1"><img alt="" ng-src="{{detailItem.image}}"></a>
+					<a href="themes/images/ladies/1.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 1"><img alt="" ng-src="{{detailItem.image || 'themes/images/placeHolder.png'}}"></a>
 					<ul class="thumbnails small">
 						<li class="span1">
-							<a href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 2"><img src="themes/images/doge.jpg" alt=""></a>
+							<a href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 2"><img ng-src="{{detailItem.image1 || 'themes/images/placeHolder.png'}}" alt=""></a>
 						</li>
 						<li class="span1">
-							<a href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 3"><img src="themes/images/doge.jpg" alt=""></a>
+							<a checkImage href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 3"><img ng-src="{{detailItem.image2 || 'themes/images/placeHolder.png'}}"   alt=""></a>
 						</li>
 						<li class="span1">
-							<a href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 4"><img src="themes/images/doge.jpg" alt=""></a>
+							<a href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 4"><img ng-src="{{detailItem.image3 || 'themes/images/placeHolder.png'}}" alt=""></a>
 						</li>
 						<li class="span1">
-							<a href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 5"><img src="themes/images/doge.jpg" alt=""></a>
+							<a href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 5"><img ng-src="{{detailItem.image4 || 'themes/images/placeHolder.png'}}" alt=""></a>
 						</li>
 					</ul>
 				</div>
@@ -45,7 +45,7 @@
 						<p>&nbsp;</p>
 						<label>Qty:</label>
 						<input type="text" class="span1" placeholder="1">
-						<button class="btn btn-inverse" type="submit" ng-click="addToCartClick()" >Add to cart</button>
+						<button class="btn btn-inverse" type="submit" ng-click="addToCartClick($event)" >Add to cart</button>
 					</form>
 				</div>
 			</div>
