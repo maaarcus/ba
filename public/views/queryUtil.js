@@ -10,9 +10,24 @@ angular.module('app')
       },
       getItemByBrand: function (data,brand) {
         if (brand == "all"){
+          delete data.$promise
+          delete data.__proto__
           return data
         }else{
           return _.where(data,{ brand: brand})
+        }
+      },
+      getItemByBrandinSimilarProducts: function (data,brand,nameOfitemToExclude) {
+        if (brand == "all"){
+          delete data.$promise
+          delete data.__proto__
+          return data
+        }else{
+          var result = _.where(data,{ brand: brand})
+          result =  _.without(result, _.findWhere(result, {
+            name: nameOfitemToExclude
+          }));
+          return result
         }
       },
       getItemByAny: function (data,query) {
@@ -39,6 +54,13 @@ angular.module('app')
 
         return result;
 
+      },
+      getRandomItem: function (data){
+
+        var obj_keys = Object.keys(data);
+        var ran_key = obj_keys[Math.floor(Math.random() *obj_keys.length)];
+        // console.log(ran_key);
+        return data[ran_key];
       }
     }
 }]);

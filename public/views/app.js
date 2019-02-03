@@ -15,6 +15,9 @@
     .run(function ($rootScope,ItemService) {
       if (!$rootScope.list){
         ItemService.get(function(data){
+          delete data.$promise
+          delete data.$resolved
+          data = JSON.parse(angular.toJson(data));
           $rootScope.list=data;
           $rootScope.$broadcast('serviceInfoReceived')
           console.log("List scope set");
@@ -35,7 +38,6 @@
 
 
       $scope.searchBar = function() {
-        console.log($scope.search);
          $location.path('/products/' + $scope.search + '/search');
       }
 
@@ -82,18 +84,25 @@
 
 
     app.controller('homeCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
-      console.log($scope.list);
+      // console.log($scope.list);
     })
 
     app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope,$mdDialog){
 
       if($rootScope.list){
         $scope.detailItem = QueryUtil.getItemByName($rootScope.list,$routeParams.itemName);
+        $scope.similarProducts=QueryUtil.getItemByBrandinSimilarProducts($rootScope.list,$scope.detailItem.brand,$scope.detailItem.name);
+        $scope.randomItem=QueryUtil.getRandomItem($rootScope.list);
+        // console.log($scope.randomItem);
       }else{
         $rootScope.$on("serviceInfoReceived", function(){
            $scope.detailItem = QueryUtil.getItemByName($rootScope.list,$routeParams.itemName);
+           $scope.similarProducts=QueryUtil.getItemByBrandinSimilarProducts($rootScope.list,$scope.detailItem.brand,$scope.detailItem.name);
+           $scope.randomItem=QueryUtil.getRandomItem($rootScope.list);
+           // console.log($scope.randomItem);
          });
       }
+
 
 
 
@@ -135,22 +144,51 @@
     })
 
     app.controller('manageItemCtrl', ['$scope','ItemService', function($scope,ItemService) {
+      var storgaeRef = firebase.storage().ref('/items');
+      var selectedFile;
       $scope.uploadStatus='Standing by...';
       console.log(firebase.auth().currentUser);
+
+      $("#file").on("change", function(event){
+        selectedFile = event.target.files[0];
+      })
 
       $scope.submit = function() {
         $scope.uploadStatus='Uploading...';
         firebase.auth().currentUser.getIdToken().then(function(idToken) {
           $scope.item.token=idToken;
-          console.log($scope.item);
-          ItemService.save($scope.item,function(res){
-            $scope.uploadStatus=res.msg;
-          },function(err){
-            console.log(err);
-          });
+          var uploadTask = firebase.storage().ref('items/' + selectedFile.name).put(selectedFile);
+          uploadTask.on('state_changed', function(snapshot){
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+              case firebase.storage.TaskState.PAUSED: // or 'paused'
+                console.log('Upload is paused');
+                break;
+              case firebase.storage.TaskState.RUNNING: // or 'running'
+                console.log('Upload is running');
+                break;
+            }
+          }, function(error) {
+            // Handle unsuccessful uploads
+          }, function() {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+              // console.log('File available at', downloadURL);
+              $scope.item.image=downloadURL;
+              ItemService.save($scope.item,function(res){
+                $scope.uploadStatus=res.msg;
+                location.reload();
+              },function(err){
+                console.log(err);
+              });
+            });
 
-          console.log(firebase.auth().currentUser);
-          console.log("done");
+
+          });
         }).catch(function(error) {
           console.log(error);
         });
@@ -187,20 +225,21 @@
 
     app.controller('productsCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope){
       var pageStep = 2;
-      var pageMaxItem = 4;
+      var pageMaxItem = 12;
 
       $scope.headItemIndex=0;
       $scope.footItemIndex=pageMaxItem;
 
-      if($rootScope){
+      if($rootScope.list){
         if($routeParams.search == "search"){
           $scope.products = QueryUtil.getItemByAny($rootScope.list,$routeParams.brand);
         }else{
           $scope.products = QueryUtil.getItemByBrand($rootScope.list,$routeParams.brand);
+          // console.log($scope.products);
         }
         $scope.maxPages = Math.ceil((Object.keys($scope.products).length)/pageMaxItem)+1;
-        console.log("object count1: " + $scope.maxPages);
-        console.log("object length: " + Object.keys($scope.products).length);
+        // console.log("object count1: " + $scope.maxPages);
+        // console.log("object length: " + Object.keys($scope.products).length);
 
       }else{
         $rootScope.$on("serviceInfoReceived", function(){
@@ -209,10 +248,12 @@
           }else{
             $scope.products = QueryUtil.getItemByBrand($rootScope.list,$routeParams.brand);
           }
+
+          $scope.maxPages = Math.ceil((Object.keys($scope.products).length)/pageMaxItem)+1;
+           // console.log("object count2: " + $scope.maxPages);
          });
 
-        $scope.maxPages = Math.ceil((Object.keys($scope.products).length)/pageMaxItem)+1;
-         console.log("object count2: " + $scope.maxPages);
+
 
       }
 
@@ -266,7 +307,7 @@
           payment: function(data, actions) {
             // 2. Make a request to your server
             payload=JSON.stringify($scope.cart);
-            return actions.request.post('/api/create-payment/',{product_id: payload,})
+            return actions.request.post('/api/create-payment/',{cart_items: payload,})
               .then(function(res) {
                 // 3. Return res.id from the response
                 console.log(res.id);
@@ -319,18 +360,36 @@
     });
 
     app.directive('checkImage', function($http) {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attrs) {
-            attrs.$observe('ngSrc', function(ngSrc) {
-              console.log(ngSrc);
-              if(!ngSrc){
-                element.attr('src', 'themes/images/placeHolder.png')
-              }
-            });
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                attrs.$observe('ngSrc', function(ngSrc) {
+                  console.log(ngSrc);
+                  if(!ngSrc){
+                    element.attr('src', 'themes/images/placeHolder.png')
+                  }
+                });
+            }
+        };
+    });
+    app.directive("fileread", [function () {
+        return {
+            scope: {
+                fileread: "="
+            },
+            link: function (scope, element, attributes) {
+                element.bind("change", function (changeEvent) {
+                    var reader = new FileReader();
+                    reader.onload = function (loadEvent) {
+                        scope.$apply(function () {
+                            scope.fileread = loadEvent.target.result;
+                        });
+                    }
+                    reader.readAsDataURL(changeEvent.target.files[0]);
+                });
+            }
         }
-    };
-});
+    }]);
 
     app.config(function($routeProvider) {
     $routeProvider

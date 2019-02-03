@@ -1,23 +1,33 @@
 <form ng-submit="submit()">
   Enter text and hit enter:
   <p>Brand</p>
-  <p><input type="text" ng-model="item.brand" name="manage_brand" /></p>
+  <p><input type="text" ng-model="item.brand" name="manage_brand" list="gunBrand" required/></p>
   <p>Name</p>
-  <p><input type="text" ng-model="item.name" name="manage_name" /></p>
-  <p>Image(url)</p>
-  <p><input type="text" ng-model="item.image" name="manage_image" /></p>
-  <p>Thumbnail Image(url)</p>
+  <p><input type="text" ng-model="item.name" name="manage_name" required/></p>
+  <!-- <p>Thumbnail Image(url)</p>
   <p><input type="text" ng-model="item.image1" placeholder="Optional" name="manage_image" /></p>
   <p>Thumbnail Image(url)</p>
   <p><input type="text" ng-model="item.image2" placeholder="Optional" name="manage_image" /></p>
   <p>Thumbnail Image(url)</p>
   <p><input type="text" ng-model="item.image3" placeholder="Optional" name="manage_image" /></p>
   <p>Thumbnail Image(url)</p>
-  <p><input type="text" ng-model="item.image4" placeholder="Optional" name="manage_image" /></p>
+  <p><input type="text" ng-model="item.image4" placeholder="Optional" name="manage_image" /></p> -->
   <p>Description</p>
-  <p><input type="text" ng-model="item.description" name="mange_description" /></p>
+  <p><input type="text" ng-model="item.description" name="mange_description" required/></p>
   <p>Price</p>
-  <p><input type="text" ng-model="item.price" name="manage_price" /></p>
+  <p><input type="text" ng-model="item.price" name="manage_price" required/></p>
+  <br>
+  <p>Image(url)</p>
+  <p><input type="file" id="file"/></p>
+  <br>
   <input type="submit" id="submit" value="Submit" />
   <pre>{{uploadStatus}}</pre>
 </form>
+
+<datalist id="gunBrand">
+  <option value="Marui">
+  <option value="WE">
+  <option value="KJ">
+  <option value="GHK">
+  <option value="ARES">
+</datalist>

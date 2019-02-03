@@ -8,7 +8,7 @@
 		<div class="span9">
 			<div class="row">
 				<div class="span4">
-					<a href="themes/images/ladies/1.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 1"><img alt="" ng-src="{{detailItem.image || 'themes/images/placeHolder.png'}}"></a>
+					<a href="{{detailItem.image}}" class="thumbnail" data-fancybox-group="group1" title="Description 1"><img alt="" ng-src="{{detailItem.image || 'themes/images/placeHolder.png'}}"></a>
 					<ul class="thumbnails small">
 						<li class="span1">
 							<a href="themes/images/doge.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 2"><img ng-src="{{detailItem.image1 || 'themes/images/placeHolder.png'}}" alt=""></a>
@@ -77,68 +77,18 @@
 					<br>
 					<h4 class="title">
 						<span class="pull-left"><span class="text"><strong>Related</strong> Products</span></span>
-						<span class="pull-right">
-							<a class="left button" href="#myCarousel-1" data-slide="prev"></a><a class="right button" href="#myCarousel-1" data-slide="next"></a>
-						</span>
 					</h4>
 					<div id="myCarousel-1" class="carousel slide">
 						<div class="carousel-inner">
 							<div class="active item">
 								<ul class="thumbnails listing-products">
-									<li class="span3">
+									<li class="span3" ng-repeat="item in similarProducts" ng-show="$index<3">
 										<div class="product-box">
 											<span class="sale_tag"></span>
-											<a href="product_detail.html"><img alt="" src="themes/images/doge.jpg"></a><br/>
-											<a href="product_detail.html" class="title">In progress</a><br/>
-											<a href="#" class="category">In progress</a>
-											<p class="price">In progress</p>
-										</div>
-									</li>
-									<li class="span3">
-										<div class="product-box">
-											<span class="sale_tag"></span>
-											<a href="product_detail.html"><img alt="" src="themes/images/doge.jpg"></a><br/>
-											<a href="product_detail.html" class="title">In progress</a><br/>
-											<a href="#" class="category">In progress</a>
-											<p class="price">In progress</p>
-										</div>
-									</li>
-									<li class="span3">
-										<div class="product-box">
-											<a href="product_detail.html"><img alt="" src="themes/images/doge.jpg"></a><br/>
-											<a href="product_detail.html" class="title">In progress</a><br/>
-											<a href="#" class="category">In progress</a>
-											<p class="price">In progress</p>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="item">
-								<ul class="thumbnails listing-products">
-									<li class="span3">
-										<div class="product-box">
-											<span class="sale_tag"></span>
-											<a href="product_detail.html"><img alt="" src="themes/images/doge.jpg"></a><br/>
-											<a href="product_detail.html" class="title">In progress</a><br/>
-											<a href="#" class="category">In progress</a>
-											<p class="price">In progress</p>
-										</div>
-									</li>
-									<li class="span3">
-										<div class="product-box">
-											<a href="product_detail.html"><img alt="" src="themes/images/doge.jpg"></a><br/>
-											<a href="product_detail.html">In progress</a><br/>
-											<a href="#" class="category">In progress</a>
-											<p class="price">In progress</p>
-										</div>
-									</li>
-									<li class="span3">
-										<div class="product-box">
-											<span class="sale_tag"></span>
-											<a href="product_detail.html"><img alt="" src="themes/images/doge.jpg"></a><br/>
-											<a href="product_detail.html" class="title">In progress</a><br/>
-											<a href="#" class="category">In progress</a>
-											<p class="price">In progress</p>
+											<a href="#!items/{{item.name}}"><img alt="" ng-src="{{item.image}}"></a><br/>
+											<a href="#!items/{{item.name}}" class="title">{{item.name}}</a><br/>
+											<a href="#" class="category">{{item.description}}</a>
+											<p class="price">{{item.price}}</p>
 										</div>
 									</li>
 								</ul>
@@ -153,9 +103,6 @@
 			<div class="block">
 				<h4 class="title">
 					<span class="pull-left"><span class="text">Randomize</span></span>
-					<span class="pull-right">
-						<a class="left button" href="#myCarousel" data-slide="prev"></a><a class="right button" href="#myCarousel" data-slide="next"></a>
-					</span>
 				</h4>
 				<div id="myCarousel" class="carousel slide">
 					<div class="carousel-inner">
@@ -164,10 +111,10 @@
 								<li class="span3">
 									<div class="product-box">
 										<span class="sale_tag"></span>
-										<a href="product_detail.html"><img alt="" src="themes/images/doge.jpg"></a><br/>
-										<a href="product_detail.html" class="title">In progress</a><br/>
-										<a href="#" class="category">In progress</a>
-										<p class="price">In progress</p>
+										<a href="#!items/{{randomItem.name}}"><img alt="" ng-src="{{randomItem.image}}"></a><br/>
+										<a href="#!items/{{randomItem.name}}" class="title">{{randomItem.name}}</a><br/>
+										<a href="#" class="category">{{randomItem.description}}</a>
+										<p class="price">{{randomItem.price}}</p>
 									</div>
 								</li>
 							</ul>
@@ -192,21 +139,21 @@
 				<ul class="small-product">
 					<li>
 						<a href="#" title="In progress">
-							<img src="themes/images/doge.jpg" alt="In progress">
+							<img src="themes/images/placeHolder.png" alt="Coming soon">
 						</a>
-						<a href="#">In progress</a>
+						<a href="#">Coming soon</a>
 					</li>
 					<li>
 						<a href="#" title="In progress">
-							<img src="themes/images/doge.jpg" alt="In progress">
+							<img src="themes/images/placeHolder.png" alt="Coming soon">
 						</a>
-						<a href="#">LIn progress/a>
+						<a href="#">Coming soon</a>
 					</li>
 					<li>
 						<a href="#" title="In progress">
-							<img src="themes/images/doge.jpg" alt="In progress">
+							<img src="themes/images/placeHolder.png" alt="Coming soon">
 						</a>
-						<a href="#">In progress</a>
+						<a href="#">Coming soon</a>
 					</li>
 				</ul>
 			</div>

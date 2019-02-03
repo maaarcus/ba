@@ -11,10 +11,10 @@ module.exports = function(app,request,helper,ref){
     {
       // var dbData=helper.validateWithDB(ref); //deal with async check here
       // console.log("me first: "+dbData);
-      var mappedItems=helper.mapProductCheckout(req.body.product_id);
+      var mappedItems=helper.mapProductCheckout(req.body.cart_items);
       var totalPrice=helper.getTotalCheckout(mappedItems);
-      console.log(req.body.product_id);
-      console.log(JSON.parse(req.body.product_id)[0]);
+      console.log(req.body.cart_items);
+      console.log(JSON.parse(req.body.cart_items)[0]);
       // 2. Call /v1/payments/payment to set up the payment
       request.post(PAYPAL_API + '/v1/payments/payment',
       {
@@ -37,7 +37,7 @@ module.exports = function(app,request,helper,ref){
               total: totalPrice,
               currency: 'USD'
             },
-            description: "The payment transaction description. 5.99",
+            description: "The payment transaction description.",
             item_list: {
               items: mappedItems,
               shipping_phone_number: '123123123123123312'
