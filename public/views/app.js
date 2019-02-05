@@ -106,8 +106,16 @@
 
 
 
-      $scope.itemEditSumbit = function(){
-        console.log("edit");
+      $scope.itemDeleteSumbit = function(){
+        firebase.auth().currentUser.getIdToken().then(function(idToken) {
+          var payload={product_code: $scope.detailItem.product_code, token: idToken, deleteOperation: true}
+            ItemService.save(payload,function(res){
+              $scope.uploadStatus=res.msg;
+              location.reload();
+            },function(err){
+              console.log(err);
+            });
+        })
       }
 
       $scope.addToCartClick = function(ev){
@@ -143,11 +151,34 @@
 
     })
 
-    app.controller('manageItemCtrl', ['$scope','ItemService', function($scope,ItemService) {
+    app.controller('manageItemCtrl', ['$rootScope','$scope','ItemService','$routeParams','QueryUtil', function($rootScope,$scope,ItemService,$routeParams,QueryUtil) {
       var storgaeRef = firebase.storage().ref('/items');
       var selectedFile;
+      $scope.item={brand:"",product_code:""}
+      $scope.item.availability=true;
+
+      if($routeParams.product_code){
+        var selectedEditItem=QueryUtil.getItemByCode($rootScope.list,$routeParams.product_code)
+        $scope.item.brand=selectedEditItem.brand;
+        $scope.item.name=selectedEditItem.name;
+        $scope.item.product_code=selectedEditItem.product_code;
+        $scope.item.catagory=selectedEditItem.catagory;
+        $scope.item.description=selectedEditItem.description;
+        $scope.item.price=selectedEditItem.price;
+        $scope.item.availability=selectedEditItem.availability;
+      }
+
       $scope.uploadStatus='Standing by...';
+
       console.log(firebase.auth().currentUser);
+
+      $scope.catagories = [
+        'Airsoft guns',
+        'Parts',
+        'Accessories'
+      ];
+
+      // $scope.item.catagory=$scope.catagories[0];
 
       $("#file").on("change", function(event){
         selectedFile = event.target.files[0];
@@ -157,6 +188,7 @@
         $scope.uploadStatus='Uploading...';
         firebase.auth().currentUser.getIdToken().then(function(idToken) {
           $scope.item.token=idToken;
+          if(selectedFile){
           var uploadTask = firebase.storage().ref('items/' + selectedFile.name).put(selectedFile);
           uploadTask.on('state_changed', function(snapshot){
             // Observe state change events such as progress, pause, and resume
@@ -186,10 +218,18 @@
                 console.log(err);
               });
             });
-
-
           });
+        }else{
+          ItemService.save($scope.item,function(res){
+            $scope.uploadStatus=res.msg;
+            location.reload();
+          },function(err){
+            console.log(err);
+          });
+          console.log("not updating image");
+        }
         }).catch(function(error) {
+          $scope.uploadStatus="Error occurs. Have you attached an image?"
           console.log(error);
         });
 
@@ -405,7 +445,7 @@
         templateUrl : "./views/product_detail.html",
         controller : "productDetailCtrl"
     })
-    .when("/manageItem", {
+    .when("/manageItem/:product_code?", {
         templateUrl : "./views/manage_items.html",
         controller : "manageItemCtrl"
     })

@@ -1,7 +1,8 @@
 <section class="header_text sub" id="productDetailPage">
 <!-- <img class="pageBanner" src="themes/images/pageBanner.jpg" alt="New products" > -->
 	<h4><span>Product Detail</span></h4>
-	<a ng-show="isAdminLogin" href="#!items/{{detailItem.name}}" >Edit</a>
+	<a ng-show="isAdminLogin" href="#!manageItem/{{detailItem.product_code}}" >Edit</a>
+	<a class="pull-right" ng-click="itemDeleteSumbit()" ng-show="isAdminLogin" href="#!home" style="color:red;">Delete</a>
 </section>
 <section class="main-content">
 	<div class="row">
@@ -27,21 +28,21 @@
 				<div class="span5">
 					<address>
 						<strong>Name:</strong> <span>{{detailItem.name}}</span><br>
-						<strong>Product Code:</strong> <span>Product 14</span><br>
-						<strong>Reward Points:</strong> <span>0</span><br>
-						<strong>Availability:</strong> <span>Out Of Stock</span><br>
+						<strong>Product Code:</strong> <span>{{detailItem.product_code}}</span><br>
+						<!-- <strong>Reward Points:</strong> <span>0</span><br> -->
+						<strong>Availability:</strong> <span ng-if="detailItem.availability">In Stock</span><span style="color:red;" ng-if="!detailItem.availability">Out of Stock</span><br>
 					</address>
 					<h4><strong>Price: ${{detailItem.price}}</strong></h4>
 				</div>
 				<div class="span5">
 					<form class="form-inline">
-						<label class="checkbox">
+						<!-- <label class="checkbox">
 							<input type="checkbox" value=""> Option one is this and that
 						</label>
 						<br/>
 						<label class="checkbox">
 							<input type="checkbox" value=""> Be sure to include why it's great
-						</label>
+						</label> -->
 						<p>&nbsp;</p>
 						<label>Qty:</label>
 						<input type="text" class="span1" placeholder="1">

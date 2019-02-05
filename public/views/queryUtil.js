@@ -4,9 +4,16 @@ angular.module('app')
 
     return {
       getItemByName: function (data,itemName) {
-        return _.find(data,function(itemObject) {
+        var result = _.find(data,function(itemObject) {
           return itemObject.name == itemName
         })
+        return result;
+      },
+      getItemByCode: function (data,itemcode) {
+        var result = _.find(data,function(itemObject) {
+          return itemObject.product_code == itemcode
+        })
+        return result;
       },
       getItemByBrand: function (data,brand) {
         if (brand == "all"){

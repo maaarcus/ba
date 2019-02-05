@@ -57,19 +57,16 @@ app.post('/api/items',(request,response)=>{
     var uid = decodedToken.uid;
     console.log("User is: " + uid);
     if (uid == '7DfyEySxFrPMzxGuiW0sgsl4uQj1'){
-      ref.push({
-        name: request.body.name,
-        brand: request.body.brand,
-        image: request.body.image,
-        // image1: request.body.image1,
-        // image2: request.body.image2,
-        // image3: request.body.image3,
-        // image4: request.body.image4,
-        description: request.body.description,
-        price: request.body.price
-      })
-      console.log(request.body.name);
-      response.send({msg: "Update success"});
+      if(!request.body.deleteOperation){
+        delete request.body.token;
+        ref.child(request.body.product_code).update(request.body);
+        console.log(request.body.name);
+        response.send({msg: "Update success"});
+      }else{
+        ref.child(request.body.product_code).remove();
+        console.log("deleted");
+        response.send({msg: "deleted"});
+      }
     }else{
       console.log("not authenticated");
       response.send({msg: "not authenticated"});
@@ -78,6 +75,7 @@ app.post('/api/items',(request,response)=>{
     console.log(error);
   });
 });
+
 
 
 
