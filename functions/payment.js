@@ -8,9 +8,7 @@ module.exports = function(app,request,helper,ref){
     // Set up the payment:
     // 1. Set up a URL to handle requests from the PayPal button
     .post('/api/create-payment/', function(req, res)
-    {
-      // var dbData=helper.validateWithDB(ref); //deal with async check here
-      // console.log("me first: "+dbData);
+    {      
       var mappedItems=helper.mapProductCheckout(req.body.cart_items);
       var totalPrice=helper.getTotalCheckout(mappedItems);
       console.log(req.body.cart_items);

@@ -16,11 +16,12 @@
 				<tbody>
 					<tr ng-repeat="item in products">
 						<td><input type="checkbox" value="option1"></td>
-						<td><a href="#!items/{{item.name}}"><img alt="" ng-src="{{item.image}}"></a></td>
+						<td><a href="#!items/{{item.name}}"><img style="width=100%; max-width:100px;" alt="" ng-src="{{item.image}}"></a></td>
 						<td>{{item.name}}</td>
-						<td><input type="text" placeholder="1" class="input-mini"></td>
+						<td><input type="number" ng-model="item.quantity" class="input-mini"></td>
+						<!-- <td><p class="input-mini">1</p></td> -->
 						<td>${{item.price}}</td>
-						<td>${{item.price}}</td>
+						<td>${{item.price*item.quantity}}</td>
 					</tr>
 					<!-- <tr>
 						<td><input type="checkbox" value="option1"></td>

@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const express = require('express');
 var firebase = require("firebase");
 var request = require('request');
+var _ = require('underscore');
 
 // var config = {
 //   apiKey: "AIzaSyBv8I-qaYHgD2HgaAj3CdC7nGJsGbPndDI",

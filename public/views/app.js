@@ -88,9 +88,9 @@
     })
 
     app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope,$mdDialog){
-
+      $scope.quantity=1;
       if($rootScope.list){
-        $scope.detailItem = QueryUtil.getItemByName($rootScope.list,$routeParams.itemName);
+        $scope.detailItem = QueryUtil.getItemByCode($rootScope.list,$routeParams.product_code);
         $scope.similarProducts=QueryUtil.getItemByBrandinSimilarProducts($rootScope.list,$scope.detailItem.brand,$scope.detailItem.name);
         $scope.randomItem=QueryUtil.getRandomItem($rootScope.list);
         // console.log($scope.randomItem);
@@ -122,7 +122,8 @@
         console.log("addToCartClick");
         if($rootScope.list){
           if(!$rootScope.cart.includes($scope.detailItem)){
-            $rootScope.cart.push($scope.detailItem);
+            // $rootScope.cart.push($scope.detailItem);
+            QueryUtil.addToCartWithQty($rootScope.cart,$scope.detailItem,$scope.quantity);
             $mdDialog.show(
               $mdDialog.alert()
                 .parent(angular.element(document.querySelector('#productDetailPage')))
@@ -134,12 +135,13 @@
                 .targetEvent(ev)
             );
           }else{
+            QueryUtil.updateCartQty($rootScope.cart,$scope.detailItem,$scope.quantity);
             $mdDialog.show(
               $mdDialog.alert()
                 .parent(angular.element(document.querySelector('#productDetailPage')))
                 .clickOutsideToClose(true)
-                .title('Error')
-                .textContent('Already in the cart!')
+                .title('Cart Updated')
+                .textContent('quantity updated successfully!')
                 .ariaLabel('Alert Dialog Demo')
                 .ok('OK')
                 .targetEvent(ev)
@@ -154,8 +156,14 @@
     app.controller('manageItemCtrl', ['$rootScope','$scope','ItemService','$routeParams','QueryUtil', function($rootScope,$scope,ItemService,$routeParams,QueryUtil) {
       var storgaeRef = firebase.storage().ref('/items');
       var selectedFile;
+      $scope.catagories = [
+        'Airsoft guns',
+        'Parts',
+        'Accessories'
+      ];
       $scope.item={brand:"",product_code:""}
       $scope.item.availability=true;
+      $scope.item.catagory = $scope.catagories[0]
 
       if($routeParams.product_code){
         var selectedEditItem=QueryUtil.getItemByCode($rootScope.list,$routeParams.product_code)
@@ -172,11 +180,7 @@
 
       console.log(firebase.auth().currentUser);
 
-      $scope.catagories = [
-        'Airsoft guns',
-        'Parts',
-        'Accessories'
-      ];
+
 
       // $scope.item.catagory=$scope.catagories[0];
 
@@ -266,31 +270,31 @@
     app.controller('productsCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope){
       var pageStep = 2;
       var pageMaxItem = 12;
-
+      $scope.currentPage=1;
       $scope.headItemIndex=0;
       $scope.footItemIndex=pageMaxItem;
 
-      if($rootScope.list){
+      var loadProducts = function() {
         if($routeParams.search == "search"){
           $scope.products = QueryUtil.getItemByAny($rootScope.list,$routeParams.brand);
         }else{
-          $scope.products = QueryUtil.getItemByBrand($rootScope.list,$routeParams.brand);
-          // console.log($scope.products);
+          $scope.products = QueryUtil.getItemByCatagory($rootScope.list,$routeParams.catagory);
+          console.log($routeParams.catagory);
+          if($routeParams.brand){
+            $scope.products = QueryUtil.getItemByBrand($scope.products,$routeParams.brand);
+          }
         }
         $scope.maxPages = Math.ceil((Object.keys($scope.products).length)/pageMaxItem)+1;
-        // console.log("object count1: " + $scope.maxPages);
-        // console.log("object length: " + Object.keys($scope.products).length);
+      }
 
+
+      if($rootScope.list){
+        loadProducts();
       }else{
         $rootScope.$on("serviceInfoReceived", function(){
           if($routeParams.search == "search"){
-            $scope.products = QueryUtil.getItemByAny($rootScope.list,$routeParams.brand);
-          }else{
-            $scope.products = QueryUtil.getItemByBrand($rootScope.list,$routeParams.brand);
+            loadProducts();
           }
-
-          $scope.maxPages = Math.ceil((Object.keys($scope.products).length)/pageMaxItem)+1;
-           // console.log("object count2: " + $scope.maxPages);
          });
 
 
@@ -298,13 +302,23 @@
       }
 
 
+      $scope.prevNextPage = function(command){
+        command=parseInt(command);
+        if ( command == "prev" && command > 0 ){
+          $scope.currentPage=$scope.currentPage-1;
+        }else if( command == "next" && command >= $scope.maxPages){
+          $scope.currentPage=$scope.currentPage+1;
+        }
 
+        console.log($scope.currentPage);
+      }
 
       $scope.switchPage = function(page){
+
         $scope.headItemIndex=(page-1)*pageStep;
         $scope.footItemIndex=(page-1)*pageStep+pageMaxItem;
-        // console.log($scope.footItemIndex);
-        // console.log($scope.headItemIndex);
+        $scope.currentPage=page;
+
       }
 
     })
@@ -316,7 +330,7 @@
       var total = 0;
       for(var i = 0; i < $scope.cart.length; i++){
           var product = $scope.cart[i];
-          total += parseFloat(product.price);
+          total += parseFloat(product.price)*product.quantity;
           }
           return total;
       }
@@ -441,7 +455,7 @@
         templateUrl : "./views/home.html",
         controller : "homeCtrl"
     })
-    .when("/items/:itemName", {
+    .when("/items/:product_code", {
         templateUrl : "./views/product_detail.html",
         controller : "productDetailCtrl"
     })
@@ -453,6 +467,18 @@
         templateUrl : "./views/login.html",
         controller : "loginCtrl"
     })
+    // .when("/products/:brand?/:search?", {
+    //     templateUrl : "./views/products.html",
+    //     controller : "productsCtrl"
+    // })
+    .when("/products/catagory/:catagory?", {
+        templateUrl : "./views/products.html",
+        controller : "productsCtrl"
+    })
+    .when("/products/catagory/:catagory?/brand/:brand?", {
+        templateUrl : "./views/products.html",
+        controller : "productsCtrl"
+    })
     .when("/products/:brand?/:search?", {
         templateUrl : "./views/products.html",
         controller : "productsCtrl"
@@ -460,6 +486,9 @@
     .when("/cart", {
         templateUrl : "./views/cart.html",
         controller : "cartCtrl"
+    })
+    .when("/contact_us", {
+        templateUrl : "./views/contact_us.html"
     })
   });
 

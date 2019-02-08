@@ -15,7 +15,7 @@ module.exports = {
                 "name" : item.name,
                 "description": item.description,
                 "price"  : item.price,
-                "quantity": '1',
+                "quantity": item.quantity,
                 "currency": 'USD'
             });
         }
@@ -28,7 +28,7 @@ module.exports = {
       var sum = 0;
       for(var i in jsonObject){
         var item = jsonObject[i];
-        sum += parseInt(item.price);
+        sum += parseInt(item.price)*item.quantity;
       }
       console.log("the total is: " + sum);
       return sum;

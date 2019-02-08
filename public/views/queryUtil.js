@@ -5,6 +5,8 @@ angular.module('app')
     return {
       getItemByName: function (data,itemName) {
         var result = _.find(data,function(itemObject) {
+          console.log("itemObject.name: " + itemObject.name);
+          console.log("itemName: " + itemName);
           return itemObject.name == itemName
         })
         return result;
@@ -23,6 +25,11 @@ angular.module('app')
         }else{
           return _.where(data,{ brand: brand})
         }
+      },
+      getItemByCatagory: function (data,catagory) {
+
+          return _.where(data,{ catagory: catagory})
+
       },
       getItemByBrandinSimilarProducts: function (data,brand,nameOfitemToExclude) {
         if (brand == "all"){
@@ -68,6 +75,21 @@ angular.module('app')
         var ran_key = obj_keys[Math.floor(Math.random() *obj_keys.length)];
         // console.log(ran_key);
         return data[ran_key];
+      },
+      addToCartWithQty: function (cart,selectedItem,qty){
+        console.log(qty);
+        selectedItem.quantity=qty;
+        cart.push(selectedItem);
+      },
+      updateCartQty: function (cart,selectedItem,qty){
+        var selectedItemInCart = _.find(cart,function(item){
+          return item.product_code == selectedItem.product_code
+        })
+        if(selectedItemInCart){
+          selectedItemInCart.quantity=qty;
+        }else{
+          console.log("Unexpected error: the item cannot be found in the cart");
+        }
       }
     }
 }]);

@@ -6,9 +6,9 @@
 							<li class="span3" ng-repeat="item in products" ng-if="$index >= headItemIndex" ng-show="$index<footItemIndex">
 								<div class="product-box">
 									<span class="sale_tag"></span>
-									<a href="#!items/{{item.name}}"><img alt="" ng-src="{{item.image}}"></a><br/>
-									<a href="product_detail.html" class="title">{{item.name}}</a><br/>
-									<a href="#" class="category">{{item.description}}</a>
+									<a href="#!items/{{item.product_code}}"><img alt="" ng-src="{{item.image}}"></a><br/>
+									<a href="#!items/{{item.product_code}}" class="title">{{item.name}}</a><br/>
+									<a href="#!items/{{item.product_code}}" class="category">{{item.description}}</a>
 									<p class="price">${{item.price}}</p>
 								</div>
 							</li>
@@ -20,8 +20,9 @@
 						</section>
 						<div class="pagination pagination-small pagination-centered">
 							<ul>
-								<li><button ng-click="switchPage('1')" >Prev</button></li>
+								<li><button ng-click="prevNextPage('prev')" >Prev</button></li>
 								<li ng-repeat="n in [] | range:maxPages"><button ng-click="switchPage(n)" >{{n}}</button></li>
+								<li><button ng-click="prevNextPage('next')" >Next</button></li>
 							</ul>
 						</div>
 					</div>
