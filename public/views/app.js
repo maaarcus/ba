@@ -141,7 +141,7 @@
                 .parent(angular.element(document.querySelector('#productDetailPage')))
                 .clickOutsideToClose(true)
                 .title('Cart Updated')
-                .textContent('quantity updated successfully!')
+                .textContent('Quantity updated successfully!')
                 .ariaLabel('Alert Dialog Demo')
                 .ok('OK')
                 .targetEvent(ev)
@@ -323,7 +323,7 @@
 
     })
 
-    app.controller('cartCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
+    app.controller('cartCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope,$mdDialog){
       console.log($rootScope.cart);
       $scope.products=$rootScope.cart;
       $scope.getTotal = function(){
@@ -344,41 +344,32 @@
               production: '<insert production client id>'
           },
 
-          // payment: function() {
-          //
-          //     var env    = this.props.env;
-          //     var client = this.props.client;
-          //
-          //     return paypal.rest.payment.create(env, client, {
-          //         transactions: [
-          //             {
-          //                 amount: { total: '1.00', currency: 'USD' }
-          //             }
-          //         ]
-          //     });
-          // },
-
           payment: function(data, actions) {
             // 2. Make a request to your server
             payload=JSON.stringify($scope.cart);
             return actions.request.post('/api/create-payment/',{cart_items: payload,})
               .then(function(res) {
                 // 3. Return res.id from the response
-                console.log(res.id);
+
                 return res.id;
+              })
+              .catch(function(error){
+                $mdDialog.show(
+                  $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#cartPage')))
+                    .clickOutsideToClose(true)
+                    .title('Something went wrong')
+                    .textContent('Try refreshing the website with Ctrl + F5 please.')
+                    .ariaLabel('Alert Dialog Demo')
+                    .ok('OK')
+                );
+                // alert("Something went wrong. Try refreshing the website with Ctrl + F5 please.")
               });
           },
 
           commit: true, // Optional: show a 'Pay Now' button in the checkout flow
 
-          // onAuthorize: function(data, actions) {
-          //
-          //     // Optional: display a confirmation page here
-          //
-          //     return actions.payment.execute().then(function() {
-          //         // Show a success page to the buyer
-          //     });
-          // }
+
           onAuthorize: function(data, actions) {
             // 2. Make a request to your server
             return actions.request.post('/api/execute-payment/', {

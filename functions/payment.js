@@ -8,63 +8,78 @@ module.exports = function(app,request,helper,ref){
     // Set up the payment:
     // 1. Set up a URL to handle requests from the PayPal button
     .post('/api/create-payment/', function(req, res)
-    {      
+    {
       var mappedItems=helper.mapProductCheckout(req.body.cart_items);
       var totalPrice=helper.getTotalCheckout(mappedItems);
       console.log(req.body.cart_items);
       console.log(JSON.parse(req.body.cart_items)[0]);
-      // 2. Call /v1/payments/payment to set up the payment
-      request.post(PAYPAL_API + '/v1/payments/payment',
-      {
-        auth:
-        {
-          user: CLIENT,
-          pass: SECRET
-        },
-        body:
-        {
-          intent: 'sale',
-          payer:
-          {
-            payment_method: 'paypal'
-          },
-          transactions: [
-          {
-            amount:
-            {
-              total: totalPrice,
-              currency: 'USD'
-            },
-            description: "The payment transaction description.",
-            item_list: {
-              items: mappedItems,
-              shipping_phone_number: '123123123123123312'
-            }
 
-          },
-        ],
-        note_to_payer: "Shoud you have any questions, please contact our whatsapp: 12312322",
-          redirect_urls:
+      ref.once('value', function(snapshot) {
+        console.log("payment get db: " + snapshot.val());
+        var allItems=snapshot.val();
+        // console.log(allItems["BW-ACC-TM-MAG-062-G17-BK"]);
+        if(helper.validateWithDB(allItems,req.body.cart_items)){
+          // 2. Call /v1/payments/payment to set up the payment
+          request.post(PAYPAL_API + '/v1/payments/payment',
           {
-            return_url: 'https://www.google.com',
-            cancel_url: 'https://www.mysite.com'
-          }
-        },
-        json: true
-      }, function(err, response)
-      {
-        if (err)
-        {
-          console.error(err);
-          console.log("something went wrong");
+            auth:
+            {
+              user: CLIENT,
+              pass: SECRET
+            },
+            body:
+            {
+              intent: 'sale',
+              payer:
+              {
+                payment_method: 'paypal'
+              },
+              transactions: [
+              {
+                amount:
+                {
+                  total: totalPrice,
+                  currency: 'USD'
+                },
+                description: "The payment transaction description.",
+                item_list: {
+                  items: mappedItems,
+                  shipping_phone_number: '123123123123123312'
+                }
+
+              },
+            ],
+            note_to_payer: "Shoud you have any questions, please contact our whatsapp: 12312322",
+              redirect_urls:
+              {
+                return_url: 'https://www.google.com',
+                cancel_url: 'https://www.mysite.com'
+              }
+            },
+            json: true
+          }, function(err, response)
+          {
+            if (err)
+            {
+              console.error(err);
+              console.log("something went wrong");
+              return res.sendStatus(500);
+            }
+            // 3. Return the payment ID to the client
+            res.json(
+            {
+              id: response.body.id
+            });
+          });
+        }else{
+          console.log("Validate products with DB failed");
           return res.sendStatus(500);
         }
-        // 3. Return the payment ID to the client
-        res.json(
-        {
-          id: response.body.id
-        });
+
+
       });
+
+
     })
     // Execute the payment:
     // 1. Set up a URL to handle requests from the PayPal button.

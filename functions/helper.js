@@ -29,9 +29,47 @@ module.exports = {
       for(var i in jsonObject){
         var item = jsonObject[i];
         sum += parseInt(item.price)*item.quantity;
+        // console.log("looped: " + i);
       }
       console.log("the total is: " + sum);
       return sum;
+    },
+
+    validateWithDB: function(dbObject,json){
+      var dbSum = 0;
+      var cartSum = 0;
+      jsonObject=JSON.parse(json);
+      for(var i in jsonObject){
+        var item = jsonObject[i];
+        console.log("validate looped: " + i);
+        try{
+          var dbitem = dbObject[item.product_code]
+          console.log("prodcut code: " + item.product_code);
+          console.log("dbprice: "+ dbitem.price + " itemPrice: "+item.price);
+          cartSum += parseInt(item.price)*item.quantity;
+          dbSum += parseInt(dbitem.price)*item.quantity;
+          if (dbitem.price != item.price){
+            console.log("Price not matched");
+            return false;
+          }else{
+            console.log("Price matched");
+          }
+        }catch(error){
+          console.log("no such product code in db");
+          console.log(error);
+        }
+      }
+
+      if (dbSum != cartSum){
+        console.log("dbsum: " + dbSum + " cartSum: " + cartSum);
+        return false;
+      }else{
+        console.log("dbsum: " + dbSum + " cartSum: " + cartSum);
+        return true;
+      }
+
+
+
     },
 
     // validateWithDB: async function(ref){
