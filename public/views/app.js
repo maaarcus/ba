@@ -36,6 +36,24 @@
       $rootScope.isAdminLogin=false;
       $rootScope.isLoggedIn=false;
 
+      $scope.validator = function(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+        // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if( !regex.test(key) ) {
+          theEvent.returnValue = false;
+          if(theEvent.preventDefault) theEvent.preventDefault();
+        }
+      }
+
 
       $scope.searchBar = function() {
          $location.path('/products/' + $scope.search + '/search');
@@ -96,7 +114,7 @@
         // console.log($scope.randomItem);
       }else{
         $rootScope.$on("serviceInfoReceived", function(){
-           $scope.detailItem = QueryUtil.getItemByName($rootScope.list,$routeParams.itemName);
+           $scope.detailItem = QueryUtil.getItemByCode($rootScope.list,$routeParams.product_code);
            $scope.similarProducts=QueryUtil.getItemByBrandinSimilarProducts($rootScope.list,$scope.detailItem.brand,$scope.detailItem.name);
            $scope.randomItem=QueryUtil.getRandomItem($rootScope.list);
            // console.log($scope.randomItem);
@@ -279,7 +297,7 @@
           $scope.products = QueryUtil.getItemByAny($rootScope.list,$routeParams.brand);
         }else{
           $scope.products = QueryUtil.getItemByCatagory($rootScope.list,$routeParams.catagory);
-          console.log($routeParams.catagory);
+          // console.log($routeParams.catagory);
           if($routeParams.brand){
             $scope.products = QueryUtil.getItemByBrand($scope.products,$routeParams.brand);
           }
@@ -310,7 +328,7 @@
           $scope.currentPage=$scope.currentPage+1;
         }
 
-        console.log($scope.currentPage);
+
       }
 
       $scope.switchPage = function(page){
@@ -324,7 +342,6 @@
     })
 
     app.controller('cartCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope,$mdDialog){
-      console.log($rootScope.cart);
       $scope.products=$rootScope.cart;
       $scope.getTotal = function(){
       var total = 0;

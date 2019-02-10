@@ -59,12 +59,15 @@ module.exports = {
           console.log(error);
         }
       }
-
+      if (item.quantity < 1 || item.quantity == null){
+        console.log("It is not a positive number");
+        return false;
+      }
       if (dbSum != cartSum){
-        console.log("dbsum: " + dbSum + " cartSum: " + cartSum);
+        console.log("not matched dbsum: " + dbSum + " cartSum: " + cartSum);
         return false;
       }else{
-        console.log("dbsum: " + dbSum + " cartSum: " + cartSum);
+        console.log("matched dbsum: " + dbSum + " cartSum: " + cartSum);
         return true;
       }
 

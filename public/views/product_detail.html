@@ -45,7 +45,7 @@
 						</label> -->
 						<p>&nbsp;</p>
 						<label>Qty:</label>
-						<input type="number" ng-model="quantity" class="span1" >
+						<input type="number" ng-model="quantity" min="0" ng-keypress='validator(event)' class="span1" >
 						<button class="btn btn-inverse" type="submit" ng-click="addToCartClick($event)" >Add to cart</button>
 					</form>
 				</div>
