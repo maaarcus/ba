@@ -90,6 +90,9 @@ angular.module('app')
         }else{
           console.log("Unexpected error: the item cannot be found in the cart");
         }
+      },
+      copy: function (obj) {
+      	return JSON.parse(JSON.stringify(obj));
       }
     }
 }]);

@@ -136,6 +136,8 @@
         })
       }
 
+
+
       $scope.addToCartClick = function(ev){
         console.log("addToCartClick");
         if($rootScope.list){
@@ -350,6 +352,14 @@
           total += parseFloat(product.price)*product.quantity;
           }
           return total;
+      }
+
+      $scope.removeFromCart = function(item_product_code){
+        var cart = $rootScope.cart;
+        var itemIndex = cart.map(function(d) { return d['product_code']; }).indexOf(item_product_code)
+        cart.splice(itemIndex,1);
+        console.log($rootScope.cart);
+        console.log(cart);
       }
 
       $scope.opts = {

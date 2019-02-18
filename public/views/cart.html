@@ -15,7 +15,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="item in products">
-						<td><input type="checkbox" value="option1"></td>
+						<td><input type="checkbox" value="option1" ng-model="product_code_checkbox" ng-change="removeFromCart(item.product_code)" ></td>
 						<td><a href="#!items/{{item.product_code}}"><img style="width=100%; max-width:100px;" alt="" ng-src="{{item.image}}"></a></td>
 						<td>{{item.name}}</td>
 						<td><input type="number" min="0" ng-keypress='validator(event)' ng-model="item.quantity" class="input-mini"></td>
