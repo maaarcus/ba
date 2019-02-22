@@ -32,7 +32,7 @@
 	   });
     const auth = firebase.auth();
 
-    app.controller('mainCtrl',function($location,$window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
+    app.controller('mainCtrl',['$location','$window','$firebaseObject','$scope','ItemService','QueryUtil','$rootScope',function($location,$window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
       $rootScope.isAdminLogin=false;
       $rootScope.isLoggedIn=false;
 
@@ -89,7 +89,7 @@
         event.onerror = '';
       }
 
-    })
+    }])
 
     app.filter('range', function() {
       return function(input, total) {
@@ -101,11 +101,11 @@
     });
 
 
-    app.controller('homeCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
+    app.controller('homeCtrl',['$window','$firebaseObject','$scope','ItemService','QueryUtil','$rootScope',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope){
       // console.log($scope.list);
-    })
+    }])
 
-    app.controller('productDetailCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope,$mdDialog){
+    app.controller('productDetailCtrl',['$firebaseObject','$scope','ItemService','QueryUtil','$routeParams','$rootScope','$mdDialog',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope,$mdDialog){
       $scope.quantity=1;
       if($rootScope.list){
         $scope.detailItem = QueryUtil.getItemByCode($rootScope.list,$routeParams.product_code);
@@ -171,7 +171,7 @@
         }
       }
 
-    })
+    }])
 
     app.controller('manageItemCtrl', ['$rootScope','$scope','ItemService','$routeParams','QueryUtil', function($rootScope,$scope,ItemService,$routeParams,QueryUtil) {
       var storgaeRef = firebase.storage().ref('/items');
@@ -261,7 +261,7 @@
       }
     }])
 
-    app.controller('loginCtrl',function($rootScope,$scope,$window){
+    app.controller('loginCtrl',['$rootScope','$scope','$window',function($rootScope,$scope,$window){
       $scope.loginSubmit = function() {
         if($rootScope.isLoggedIn){
           console.log("logged in already, not submitting");
@@ -285,9 +285,9 @@
 
 
       }
-    })
+    }])
 
-    app.controller('productsCtrl',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope){
+    app.controller('productsCtrl',['$firebaseObject','$scope','ItemService','QueryUtil','$routeParams','$rootScope',function($firebaseObject,$scope,ItemService,QueryUtil,$routeParams,$rootScope){
       var pageStep = 2;
       var pageMaxItem = 12;
       $scope.currentPage=1;
@@ -341,9 +341,9 @@
 
       }
 
-    })
+    }])
 
-    app.controller('cartCtrl',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope,$mdDialog){
+    app.controller('cartCtrl',['$window','$firebaseObject','$scope','ItemService','QueryUtil','$rootScope','$mdDialog',function($window,$firebaseObject,$scope,ItemService,QueryUtil,$rootScope,$mdDialog){
       $scope.products=$rootScope.cart;
       $scope.getTotal = function(){
       var total = 0;
@@ -409,7 +409,7 @@
           }
       };
 
-    })
+    }])
 
 
 
@@ -431,7 +431,7 @@
       }
     });
 
-    app.directive('checkImage', function($http) {
+    app.directive('checkImage', ['$http',function($http) {
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
@@ -443,27 +443,27 @@
                 });
             }
         };
-    });
-    app.directive("fileread", [function () {
-        return {
-            scope: {
-                fileread: "="
-            },
-            link: function (scope, element, attributes) {
-                element.bind("change", function (changeEvent) {
-                    var reader = new FileReader();
-                    reader.onload = function (loadEvent) {
-                        scope.$apply(function () {
-                            scope.fileread = loadEvent.target.result;
-                        });
-                    }
-                    reader.readAsDataURL(changeEvent.target.files[0]);
-                });
-            }
-        }
     }]);
+    // app.directive("fileread", [function () {
+    //     return {
+    //         scope: {
+    //             fileread: "="
+    //         },
+    //         link: function (scope, element, attributes) {
+    //             element.bind("change", function (changeEvent) {
+    //                 var reader = new FileReader();
+    //                 reader.onload = function (loadEvent) {
+    //                     scope.$apply(function () {
+    //                         scope.fileread = loadEvent.target.result;
+    //                     });
+    //                 }
+    //                 reader.readAsDataURL(changeEvent.target.files[0]);
+    //             });
+    //         }
+    //     }
+    // }]);
 
-    app.config(function($routeProvider) {
+    app.config(['$routeProvider',function($routeProvider) {
     $routeProvider
     .when("/", {
         templateUrl : "./views/home.html",
@@ -508,7 +508,7 @@
     .when("/contact_us", {
         templateUrl : "./views/contact_us.html"
     })
-  });
+  }]);
 
 
 }());
